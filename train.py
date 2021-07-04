@@ -123,6 +123,8 @@ def outer_loop(training_params=TRAINING_PARAMS, model_name='model'):
     plt.xlabel('Episode #')
     plt.savefig(f'{model_name}_{get_datefmt_str()}.png')
 
+    env.close()
+
 if __name__ == "__main__":
 
     outer_loop()
