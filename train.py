@@ -1,22 +1,28 @@
 from unityagents import UnityEnvironment
 from dqn_agent import Agent
+from utils import get_datefmt_str
+
+import torch
 
 from collections import deque
+import matplotlib
 import matplotlib.pyplot as plt
+import json
+import numpy as np
 
 saved_scores=[]
 
 TRAINING_PARAMS = {
     "REPLAY_BUFFER_SIZE": int(1e5),
-    "BATCH_SIZE": 8,
-    "GAMMA": 8,
+    "BATCH_SIZE": 64,
+    "GAMMA": 0.95,
     "TAU": 1e-2,
     "LEARNING_RATE": 1e-3,
     "UPDATE_TARGET_NET_STEPS": 4,
     "SEED": int(1234),
 }
 
-def train(agent=None, training_params=TRAINING_PARAMS, n_episodes=2000, max_t=500, eps_start=0.85, eps_end=0.05, eps_decay=0.996):
+def train_rl(agent=None, env=None, training_params=TRAINING_PARAMS, n_episodes=1000, max_t=500, eps_start=0.85, eps_end=0.05, eps_decay=0.996):
     """Deep Q-Learning.
     
     Params
@@ -28,10 +34,11 @@ def train(agent=None, training_params=TRAINING_PARAMS, n_episodes=2000, max_t=50
         eps_decay (float): multiplicative factor (per episode) for decreasing epsilon
     """
     scores = []                        # list containing scores from each episod    
-    scores_window = deque(maxlen=100)  # last 200 scores
+    scores_window = deque(maxlen=100)  # last 100 scores
     max_score = 0
     consecutive = 0
     eps = eps_start                    # initialize epsilon
+    brain_name = env.brain_names[0]
     print("train")
     #env.close()
     for i_episode in range(1, n_episodes+1):
@@ -77,32 +84,45 @@ def train(agent=None, training_params=TRAINING_PARAMS, n_episodes=2000, max_t=50
             
         if consecutive >= 100:
             print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode-100, np.mean(scores_window)))
-            torch.save(agent.qnetwork_local.state_dict(), 'checkpoint.pth')
+            torch.save(agent.qnetwork_local.state_dict(), 'model.pt')
             break
     return scores
 
-if 'env' in locals():
-    env.close()
-    
+def outer_loop(training_params=TRAINING_PARAMS, model_name='model'):
 
-env = UnityEnvironment(file_name="/data/Banana_Linux_NoVis/Banana.x86_64")
-brain_name = env.brain_names[0]
-brain = env.brains[brain_name]
-env_info = env.reset(train_mode=True)[brain_name]
-action_size = brain.vector_action_space_size
-state = env_info.vector_observations[0]
-state_size = len(state)
+    env = UnityEnvironment(file_name="/data/Banana_Linux_NoVis/Banana.x86_64")
+    brain_name = env.brain_names[0]
+    brain = env.brains[brain_name]
+    env_info = env.reset(train_mode=True)[brain_name]
+    action_size = brain.vector_action_space_size
+    state = env_info.vector_observations[0]
+    state_size = len(state)
 
-dqn_agent=Agent(state_size, action_size, TRAINING_PARAMS)
+    dqn_agent=Agent(state_size, action_size, training_params)
 
-print("agent instantiated")
+    scores = train_rl(agent=dqn_agent, env=env, training_params=training_params)
 
-scores = train(agent=dqn_agent, training_params=TRAINING_PARAMS)
+    score_meta = {}
+    score_meta["max"] = np.max(scores)
+    score_meta["min"] = np.min(scores)
+    score_meta["episodes"] = len(scores)
+    score_meta["mean"] = np.mean(scores)
+    score_meta["scores"] = scores
 
-# plot the scores
-fig = plt.figure()
-ax = fig.add_subplot(111)
-plt.plot(np.arange(len(scores)), scores)
-plt.ylabel('Score')
-plt.xlabel('Episode #')
-plt.show()
+    json_data = json.dumps(score_meta)
+
+    with open(f"{model_name}_{get_datefmt_str()}.json", 'w') as f:
+        f.write(json_data)
+
+    # plot the scores
+    matplotlib.use('Agg')
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    plt.plot(np.arange(len(scores)), scores)
+    plt.ylabel('Score')
+    plt.xlabel('Episode #')
+    plt.savefig(f'{model_name}_{get_datefmt_str()}.png')
+
+if __name__ == "__main__":
+
+    outer_loop()

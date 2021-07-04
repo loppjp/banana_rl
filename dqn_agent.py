@@ -1,6 +1,7 @@
 import random
 
 import torch
+import numpy as np
 
 from dq_network import QNetwork
 from replay_buffer import ReplayBuffer

@@ -3,18 +3,24 @@ from torch  import nn
 import torch.nn.functional as F
 
 class QNetwork(nn.Module):
-    """Actor (Policy) Model."""
 
     def __init__(self, state_size, action_size, seed):
-        """Initialize parameters and build model.
-        Params
-        ======
-            state_size (int): Dimension of each state
-            action_size (int): Dimension of each action
-            seed (int): Random seed
+        """
+        Instantiate Neural Network to approximate action value function
+
+        Arguments:
+
+            state_size (int): Demension of environment state vector
+            action_size (int): Demension of agent action vector
+            seed (int): Random seed for reproducability 
         """
         super(QNetwork, self).__init__()
         self.seed = torch.manual_seed(seed)
+
+        """
+        Deep network with batch normalization 
+        between fully connected layers
+        """
         
         self.fc1 = nn.Linear(state_size, 128)
         self.bn1 = nn.BatchNorm1d(128)
@@ -27,7 +33,15 @@ class QNetwork(nn.Module):
         self.fc5 = nn.Linear(32, action_size)
 
     def forward(self, state):
-        """Build a network that maps state -> action values."""
+        """
+        Perform a forward propagation inference on environment state vector
+
+        Arguments:
+            state - the enviornment state vector
+
+        Returns - action value
+        """
+
         state = self.fc1(state)
         state = self.bn1(state)
         state = F.leaky_relu(state)
