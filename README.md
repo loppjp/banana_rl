@@ -32,6 +32,7 @@ In this environment, the agent is tasked with picking up as many yellow bananas 
 
     ```
     python -m venv banana_env
+    source banana_env/bin/activate
     ```
 
 2) Clone dependencies and install into docker environment:
