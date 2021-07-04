@@ -64,3 +64,5 @@ In this environment, the agent is tasked with picking up as many yellow bananas 
 
     * [Linux, with visuals](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux.zip)
     * [Linux, headless, for training](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux_NoVis.zip)
+
+    Be sure to unzip each. There are others available on that server for Windows
