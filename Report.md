@@ -28,7 +28,7 @@ A hyper parameter study will be done to determine sensitivity of this problem to
 </br>
 </br>
 
-![Score vs Episode](./model.png)
+![Score vs Episode](./model_GAMMA_0_925_05072021_052133.png)
 
 
 ## Future Work
