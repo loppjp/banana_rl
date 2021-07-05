@@ -26,6 +26,8 @@ class Agent():
         self.seed = random.seed(training_params["SEED"])
         self.training_params = training_params
 
+        self.mode = self.training_params["MODE"]
+
         # Q-Network
         self.qnetwork_local = QNetwork(
             state_size, 
@@ -63,7 +65,7 @@ class Agent():
         
         # Learn every UPDATE_EVERY time steps.
         self.t_step = (self.t_step + 1) % self.training_params["UPDATE_TARGET_NET_STEPS"]
-        if self.t_step == 0:
+        if self.mode is "TRAIN" and self.t_step == 0:
             # If enough samples are available in memory, get random subset and learn
             if len(self.memory) > self.training_params["BATCH_SIZE"]:
                 experiences = self.memory.sample()

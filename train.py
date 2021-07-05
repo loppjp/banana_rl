@@ -20,6 +20,7 @@ TRAINING_PARAMS = {
     "LEARNING_RATE": 1e-3,
     "UPDATE_TARGET_NET_STEPS": 4,
     "SEED": int(1234),
+    "MODE": "TRAIN"
 }
 
 def train_rl(agent=None, env=None, training_params=TRAINING_PARAMS, n_episodes=1000, max_t=500, eps_start=0.85, eps_end=0.05, eps_decay=0.996):
