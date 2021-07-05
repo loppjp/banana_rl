@@ -10,18 +10,27 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 class Agent():
-    """Interacts with and learns from the environment."""
+    """
+    A deep Q-Learning agent that stores the previous observation state vector.
+    When training and inferencing, concatenate the previous and current state
+    vector
+    """
 
     def __init__(self, state_size, action_size, training_params):
-        """Initialize an Agent object.
-        
-        Params
-        ======
-            state_size (int): dimension of each state
-            action_size (int): dimension of each action
-            seed (int): random seed
         """
+        Construct the agent
+
+        Arguments:
+            state_size: An integer to provide the size of the observation
+                        state vector
+            action_size: An integer to provide the size of the action vector
+            training_params: a dictionary of parameters for training
+        """
+        
+        # double the size of the state vector since the previous and current 
+        # observations are twice as large as just one
         self.state_size = state_size * 2
+
         self.action_size = action_size
         self.seed = random.seed(training_params["SEED"])
         self.training_params = training_params
@@ -54,6 +63,7 @@ class Agent():
             self.seed
         )
         
+        # initialize the previous state to zeros
         self.last_state = np.zeros(state_size)
 
         # Initialize time step (for updating every UPDATE_EVERY steps)
@@ -69,6 +79,7 @@ class Agent():
             done
         )
         
+        # save the last state for the next step in the future
         self.last_state = state
         
         # Learn every UPDATE_EVERY time steps.
@@ -80,12 +91,12 @@ class Agent():
                 self.learn(experiences, self.training_params["GAMMA"])
 
     def act(self, state, eps=0.):
-        """Returns actions for given state as per current policy.
+        """
+        Returns actions for given state as per current policy.
         
-        Params
-        ======
-            state (array_like): current state
-            eps (float): epsilon, for epsilon-greedy action selection
+        Arguments:
+            state: a numpy array providing the current state
+            eps: epsilon, float value, for epsilon-greedy action selection
         """
         state = torch.from_numpy(np.concatenate((state, self.last_state), axis=None)).float().unsqueeze(0).to(device)
         self.qnetwork_local.eval()
@@ -100,12 +111,12 @@ class Agent():
             return random.choice(np.arange(self.action_size))
 
     def learn(self, experiences, gamma):
-        """Update value parameters using given batch of experience tuples.
+        """
+        Train on a batch of trajectories and update the target network
 
-        Params
-        ======
-            experiences (Tuple[torch.Variable]): tuple of (s, a, r, s', done) tuples 
-            gamma (float): discount factor
+        Arguments:
+            experiences - tuple of torch tensors representing trajectories
+            gamma - floating point discounting factor
         """
         states, actions, rewards, next_states, dones = experiences
         
@@ -118,7 +129,6 @@ class Agent():
         # Get expected Q values from local model
         Q_expected = self.qnetwork_local(states).gather(1, actions)
         
-        #loss = torch.nn.functional.cross_entropy(output, actions)
         loss = self.loss(Q_expected, Q_targets)
         self.optimizer.zero_grad()
         loss.backward()
@@ -128,14 +138,15 @@ class Agent():
         self.soft_update(self.qnetwork_local, self.qnetwork_target, self.training_params["TAU"])                     
 
     def soft_update(self, local_model, target_model, tau):
-        """Soft update model parameters.
+        """
+        Use tau to determine to what extent to update target network
+
         θ_target = τ*θ_local + (1 - τ)*θ_target
 
-        Params
-        ======
-            local_model (PyTorch model): weights will be copied from
-            target_model (PyTorch model): weights will be copied to
-            tau (float): interpolation parameter 
+        Arguments:
+            local_model - pytorch neural network model. used for actions
+            target_model - pytorch neural network model. used for training
+            tau - ratio by which to update target from local
         """
         for target_param, local_param in zip(target_model.parameters(), local_model.parameters()):
             target_param.data.copy_(tau*local_param.data + (1.0-tau)*target_param.data)

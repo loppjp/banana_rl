@@ -78,14 +78,14 @@ def train_rl(agent=None, env=None, training_params=TRAINING_PARAMS, n_episodes=1
             print('\rEpisode {}\tAverage Score: {:.2f}\tMax Score: {:.2f}\teps: {:.2f}'.format(
                 i_episode, np.mean(scores_window), max_score, eps), end="\r"
             )
-        if np.mean(scores_window)>=13.5:
+        if np.mean(scores_window)>=13.0:
             consecutive += 1
         else:
             consecutive = 0
             
         if consecutive >= 100:
             print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode-100, np.mean(scores_window)))
-            torch.save(agent.qnetwork_local.state_dict(), 'model.pt')
+            torch.save(agent.qnetwork_local.state_dict(), 'model.pth')
             break
     return scores
 
