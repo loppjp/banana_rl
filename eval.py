@@ -1,5 +1,5 @@
 from unityagents import UnityEnvironment
-from dqn_agent import Agent
+from dqn_window_agent import Agent
 from utils import get_datefmt_str
 
 import torch
@@ -25,7 +25,7 @@ TRAINING_PARAMS = {
     "MODE": "EVAL"
 }
 
-def eval_rl(agent=None, model='model.pt', env=None, training_params=TRAINING_PARAMS, n_episodes=1000, max_t=5000, eps_start=0.85, eps_end=0.05, eps_decay=0.996):
+def eval_rl(agent=None, model='model.pth', env=None, training_params=TRAINING_PARAMS, n_episodes=1000, max_t=5000, eps_start=0.85, eps_end=0.05, eps_decay=0.996):
     """Deep Q-Learning.
     
     Params
