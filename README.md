@@ -6,6 +6,10 @@ environment.
 
 </br>
 
+![Agent GIF](./bananas3.gif)
+
+</br>
+
 ## Project Details:
 
 </br>

@@ -2,7 +2,13 @@
 
 ### Learning Algorithm
 </br>
+
 The algorithm implemented here was Deep Q-Learning. This implementation used a target network updated from an experience replay buffer every 4 time steps. The agent used an epsilon-greedy policy for action selection. 
+
+</br>
+
+The agent stores a copy of the previous frame's state vector. The concatenation of the previous and current observation are used for experience replay training and inference.
+
 </br>
 </br>
 
@@ -20,15 +26,15 @@ The initial hyper parameters for the network are as follows:
 * Size of replay buffer: 10,000 trajectories
 * Batch Size: 64
 * Gamma: 0.95
-* Tau (for % to update target network): 0.01
-* Learning Rate: 0.001
+* Tau (for % to update target network): 0.05
+* Learning Rate: 0.005
 * Steps before updating target network: 4
 
-A hyper parameter study will be done to determine sensitivity of this problem to various parameter changes.
+A hyper parameter study was done to determine sensitivity of this problem to various parameter changes. See [HyperStudy](./HyperStudy.ipynb)
 </br>
 </br>
 
-![Score vs Episode](./model_GAMMA_0_925_05072021_052133.png)
+![Score vs Episode](./model_window_agent_05072021_092032.png)
 
 
 ## Future Work
