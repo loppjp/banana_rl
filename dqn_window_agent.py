@@ -14,6 +14,9 @@ class Agent():
     A deep Q-Learning agent that stores the previous observation state vector.
     When training and inferencing, concatenate the previous and current state
     vector
+
+    Class derived from udacity.com Deep Reinforcement Learning Nanodegree:
+    Part 2, Lesson 2, Deep-Q Networks
     """
 
     def __init__(self, state_size, action_size, training_params):

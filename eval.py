@@ -26,18 +26,27 @@ TRAINING_PARAMS = {
 }
 
 def eval_rl(agent=None, model='model.pth', env=None, training_params=TRAINING_PARAMS, n_episodes=1000, max_t=5000, eps_start=0.85, eps_end=0.05, eps_decay=0.996):
-    """Deep Q-Learning.
+    """
+    Evaluate the agent in a single episode. Loop over timesteps 
+ 
+    Function derived from:
+    udacity.com Deep Reinforcement Learning Nanodegree:
+    Part 2, Lesson 2, Deep-Q Networks
     
-    Params
-    ======
+    Arguments:
+        agent - An instance of Agent, implements functions such as step, act, lean
+        model - the relative or absolute path to a file containing model weights
+        env - A unity agents environnment instance for this training session
+        training_params - A dictionary of parameters used for training, see above
         n_episodes (int): maximum number of training episodes
         max_t (int): maximum number of timesteps per episode
         eps_start (float): starting value of epsilon, for epsilon-greedy action selection
         eps_end (float): minimum value of epsilon
         eps_decay (float): multiplicative factor (per episode) for decreasing epsilon
     """
-    agent.qnetwork_local.load_state_dict(torch.load(model))
 
+    # load the provided model file
+    agent.qnetwork_local.load_state_dict(torch.load(model))
 
     rewards = []
     score = 0 # score acheived
@@ -85,8 +94,10 @@ def outer_loop(training_params=TRAINING_PARAMS, model_name='model'):
     state = env_info.vector_observations[0]
     state_size = len(state)
 
+    # instantiate the agent
     dqn_agent=Agent(state_size, action_size, training_params)
 
+    # run an episode for evaluation
     scores = eval_rl(agent=dqn_agent, env=env, training_params=training_params)
 
     score_meta = {}
@@ -98,6 +109,7 @@ def outer_loop(training_params=TRAINING_PARAMS, model_name='model'):
 
     json_data = json.dumps(score_meta)
 
+    # save evaulation results
     with open(f"{model_name}_{get_datefmt_str()}.json", 'w') as f:
         f.write(json_data)
 

@@ -7,10 +7,22 @@ import random
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class ReplayBuffer:
-    """Fixed-size buffer to store experience tuples."""
+    """
+    Fixed-size buffer to store experience tuples.
+    """
 
     def __init__(self, action_size, buffer_size, batch_size, seed):
-        """Initialize a ReplayBuffer object.
+        """
+        
+        Initialize a ReplayBuffer object.
+
+        Class derived from:
+        udacity.com Deep Reinforcement Learning Nanodegree:
+        Part 2, Lesson 2, Deep-Q Networks
+
+        Note, when running with dqn_window_agent, state and next_state
+        are actually 2 consecutive observations from the environment
+        concattonated together
 
         Params
         ======

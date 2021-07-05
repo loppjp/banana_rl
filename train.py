@@ -24,10 +24,17 @@ TRAINING_PARAMS = {
 }
 
 def train_rl(agent=None, env=None, training_params=TRAINING_PARAMS, n_episodes=1000, max_t=500, eps_start=0.85, eps_end=0.05, eps_decay=0.996):
-    """Deep Q-Learning.
+    """
+    Learning loop. Loop over episodes and timesteps
+
+    Function derived from:
+    udacity.com Deep Reinforcement Learning Nanodegree:
+    Part 2, Lesson 2, Deep-Q Networks
     
-    Params
-    ======
+    Arguments:
+        agent - An instance of Agent, implements functions such as step, act, lean
+        env - A unity agents environnment instance for this training session
+        training_params - A dictionary of parameters used for training, see above
         n_episodes (int): maximum number of training episodes
         max_t (int): maximum number of timesteps per episode
         eps_start (float): starting value of epsilon, for epsilon-greedy action selection
@@ -90,6 +97,9 @@ def train_rl(agent=None, env=None, training_params=TRAINING_PARAMS, n_episodes=1
     return scores
 
 def outer_loop(training_params=TRAINING_PARAMS, model_name='model'):
+    """
+    An outer loop function to be invoked via notebook or command line
+    """
 
     env = UnityEnvironment(file_name="/data/Banana_Linux_NoVis/Banana.x86_64")
     brain_name = env.brain_names[0]
@@ -99,8 +109,10 @@ def outer_loop(training_params=TRAINING_PARAMS, model_name='model'):
     state = env_info.vector_observations[0]
     state_size = len(state)
 
+    # instantiate the agent
     dqn_agent=Agent(state_size, action_size, training_params)
 
+    # loop over episodes
     scores = train_rl(agent=dqn_agent, env=env, training_params=training_params)
 
     score_meta = {}
@@ -112,6 +124,7 @@ def outer_loop(training_params=TRAINING_PARAMS, model_name='model'):
 
     json_data = json.dumps(score_meta)
 
+    # save evaulation results
     with open(f"{model_name}_{get_datefmt_str()}.json", 'w') as f:
         f.write(json_data)
 
