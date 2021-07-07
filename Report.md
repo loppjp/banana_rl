@@ -39,7 +39,7 @@ A hyper parameter study was done to determine sensitivity of this problem to var
 
 ## Solution
 
-The dqn_window_agent is typically able to solve the environment in between 550 to 600 episodes. With the current seed and hyperparameters, the most recent model.pth learns to solve the task in 629 episodes. See the above plot to see the window of episodes where the 100-episode rolling average score surpassed 13.0.
+The dqn_window_agent is typically able to solve the environment in between 550 to 600 episodes. With the current seed and hyperparameters, the most recent model.pth learns to solve the task in 579 episodes. See the above plot to see the window of episodes where the 100-episode rolling average score surpassed 13.0.
 
 
 ## Future Work
