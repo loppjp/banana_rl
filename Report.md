@@ -34,7 +34,7 @@ A hyper parameter study was done to determine sensitivity of this problem to var
 </br>
 </br>
 
-![Score vs Episode](./model_window_agent_07072021_040641.png)
+![Score vs Episode](./model_window_agent_07072021_041918.png)
 
 
 ## Solution
