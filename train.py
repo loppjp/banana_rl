@@ -43,6 +43,7 @@ def train_rl(agent=None, env=None, training_params=TRAINING_PARAMS, n_episodes=1
     """
     scores = []                        # list containing scores from each episod    
     scores_window = deque(maxlen=100)  # last 100 scores
+    winning_episode = -1
     max_score = 0
     consecutive = 0
     eps = eps_start                    # initialize epsilon
@@ -88,10 +89,15 @@ def train_rl(agent=None, env=None, training_params=TRAINING_PARAMS, n_episodes=1
         if np.mean(scores_window)>=13.0:
             consecutive += 1
         else:
+            winning_episode = -1
             consecutive = 0
+
+        if consecutive == 100:
+            winning_episode = i_episode
             
-        if consecutive >= 100:
-            print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode-100, np.mean(scores_window)))
+        # add a few more episodes to this, 150 instead of 100
+        if consecutive >= 150:
+            print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(winning_episode, np.mean(scores_window)))
             torch.save(agent.qnetwork_local.state_dict(), 'model.pth')
             break
     return scores
